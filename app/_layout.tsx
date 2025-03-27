@@ -29,11 +29,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack screenOptions={{ contentStyle: { backgroundColor: '#4B0082' } }}> {/* Fondo violeta */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style="light" /> {/* Status bar en color claro */}
     </ThemeProvider>
   );
 }
+

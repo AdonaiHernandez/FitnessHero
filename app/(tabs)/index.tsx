@@ -1,111 +1,58 @@
-import { Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
-  const [coins, setCoins] = useState(120); // Ejemplo de contador de monedas
+  const router = useRouter();
+  const username = 'Usuario'; // Temporal, se cambiará cuando haya autenticación
+  const coins = 120;
 
   return (
-    <ParallaxScrollView 
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={<View style={styles.headerPlaceholder} />}
-    >
-      <ThemedView style={styles.container}>
-        {/* Contador de monedas */}
-        <View style={styles.coinContainer}>
-          <Image source={require('@/assets/images/coin.png')} style={styles.coinIcon} />
-          <Text style={styles.coinText}>{coins}</Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+      <TouchableOpacity onPress={() => router.push('/profile')}>
+          <IconSymbol size={28} name="person.circle" color="#FFF" />
+        </TouchableOpacity>
+        <Text style={styles.username}>{username}</Text>
+        <View style={styles.coinsContainer}>
+          <Text style={styles.coinsText}>{coins}</Text>
+          <Image source={require('../../assets/images/coin.png')} style={styles.coinImage} />
         </View>
+      </View>
+      
+      {/* Main Content */}
+      <View style={styles.mainContent}>
+        <TouchableOpacity style={styles.avatarContainer}>
+          <Text style={styles.avatarText}>Avatar</Text>
+        </TouchableOpacity>
         
-        {/* Avatar en el centro */}
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>Avatar</Text>
-          </View>
+        <View style={styles.buttonsRow}>
+          <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>Challenges</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>Steps</Text></TouchableOpacity>
         </View>
-
-        {/* Menú de navegación */}
-        <View style={styles.menuContainer}>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Perfil</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Rankings</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Amigos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Tienda</Text>
-          </TouchableOpacity>
-        </View>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#E0F7E9', // Verde claro
-  },
-  coinContainer: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+  container: { flex: 1, backgroundColor: '#4B0082' },
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#4B0082',
   },
-  coinIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 5,
-  },
-  coinText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#6A0DAD', // Morado oscuro
-  },
-  avatarContainer: {
-    marginTop: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarPlaceholder: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    backgroundColor: '#D3D3D3',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  menuContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 40,
-  },
-  menuItem: {
-    backgroundColor: '#6A0DAD', // Morado
-    padding: 15,
-    borderRadius: 10,
-    margin: 10,
-  },
-  menuText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  headerPlaceholder: {
-    height: 150, 
-    backgroundColor: '#6A0DAD' // Morado de fondo temporal
-  },  
+  username: { color: '#FFF', fontSize: 28, fontWeight: 'bold'},
+  coinsContainer: { flexDirection: 'row', alignItems: 'center' },
+  coinsText: { color: '#FFD700', fontSize: 18, marginRight: 5 },
+  mainContent: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#E6FFE6' },
+  avatarContainer: { width: 300, height: 200, borderRadius: 50, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center' },
+  avatarText: { color: '#000', fontWeight: 'bold', fontSize: 24},
+  buttonsRow: { flexDirection: 'row', marginTop: 20 },
+  button: { backgroundColor: '#6A0DAD', padding: 10, borderRadius: 10, marginHorizontal: 10, width: 300, height:100, justifyContent: 'center'},
+  buttonText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center', fontSize: 20},
+  coinImage: { width: 24, height: 24 },
 });
