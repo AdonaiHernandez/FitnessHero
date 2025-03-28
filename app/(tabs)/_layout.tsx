@@ -23,6 +23,16 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* Pestaña de Ranking */}
+      <Tabs.Screen
+        name="ranking"
+        options={{
+          title: 'Ranking',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="trophy.fill" color={color} />,
+        }}
+      />
+
+      {/* Pestaña de Home */}
       <Tabs.Screen
         name="index"
         options={{
@@ -30,14 +40,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+
+      {/* Pestaña de Tienda */}
       <Tabs.Screen
-        name="explore"
+        name="tienda"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Tienda',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cart.fill" color={color} />,
         }}
       />
     </Tabs>
   );
 }
-
