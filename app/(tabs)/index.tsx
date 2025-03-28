@@ -11,8 +11,8 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-      <TouchableOpacity onPress={() => router.push('/profile')}>
-        <Image source={require('../../assets/images/count.png')} style={styles.footerImage} />
+        <TouchableOpacity onPress={() => router.push('/profile')}>
+          <Image source={require('../../assets/images/count.png')} style={styles.footerImage} />
         </TouchableOpacity>
         <Text style={styles.username}>{username}</Text>
         <View style={styles.coinsContainer}>
@@ -34,7 +34,7 @@ export default function HomeScreen() {
       </View>
       {/* Footer Navigation */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={() => router.push('/ranking')}>
           <Image source={require('../../assets/images/ranking.png')} style={styles.footerImage} />
           <Text style={styles.footerText}>Rankings</Text>
         </TouchableOpacity>
@@ -42,7 +42,7 @@ export default function HomeScreen() {
           <IconSymbol size={28} name="house.fill" color="#FFF" />
           <Text style={styles.footerText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={() => router.push('/tienda')}>
           <Image source={require('../../assets/images/gym-shop.png')} style={styles.footerImage} />
           <Text style={styles.footerText}>Tienda</Text>
         </TouchableOpacity>
