@@ -17,38 +17,10 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: '#4B0082', // Fondo violeta
-          borderTopWidth: 0, // Elimina línea superior negra
-          height: 60, // Ajusta altura
+          display: 'none',
         },
       }}
     >
-      {/* Pestaña de Ranking */}
-      <Tabs.Screen
-        name="ranking"
-        options={{
-          title: 'Ranking',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="trophy.fill" color={color} />,
-        }}
-      />
-
-      {/* Pestaña de Home */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-
-      {/* Pestaña de Tienda */}
-      <Tabs.Screen
-        name="tienda"
-        options={{
-          title: 'Tienda',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cart.fill" color={color} />,
-        }}
-      />
     </Tabs>
   );
 }
