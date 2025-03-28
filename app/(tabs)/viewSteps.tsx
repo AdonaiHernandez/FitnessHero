@@ -1,12 +1,15 @@
 // /src/components/viewSteps.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 const ViewSteps: React.FC = () => {
   const steps = 5320; // Este es un valor fijo de ejemplo, lo puedes cambiar
 
   return (
     <View style={styles.container}>
+      <Header/>
       <Text style={styles.title}>Pasos del Día</Text>
       <View style={styles.counterContainer}>
         <Text style={styles.steps}>{steps}</Text>
@@ -15,6 +18,7 @@ const ViewSteps: React.FC = () => {
       <View style={styles.progressBarContainer}>
         <View style={[styles.progressBar, { width: `${(steps / 10000) * 100}%` }]} />
       </View>
+      <Footer/>
     </View>
   );
 };
