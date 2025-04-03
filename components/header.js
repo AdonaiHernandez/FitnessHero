@@ -6,9 +6,10 @@ export default function Header() {
   const username = 'Usuario'; // Temporal, se cambiará cuando haya autenticación
   const coins = 120;
 
+  //<TouchableOpacity onPress={() => router.push('/profile')}>
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => router.push('/profile')}>
+      <TouchableOpacity onPress={() => router.push('/login')}>
       <Image source={require('../assets/images/count.png')} style={styles.countImage} />
       </TouchableOpacity>
       <Text style={styles.username}>{username}</Text>
