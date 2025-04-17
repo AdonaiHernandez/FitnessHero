@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const correctUsername = 'usuario';
     const correctPassword = 'contraseña';
-    router.push('/')
+
+    if (!username || !password) {
+      setError('Por favor, completa todos los campos');
+      return;
+    }
 
     if (username === correctUsername && password === correctPassword) {
+      setError('');
+      await AsyncStorage.setItem('isLoggedIn', 'true');
       Alert.alert('Login exitoso');
-      router.push('/explore')
+      router.push('/');
     } else {
-      Alert.alert('Error', 'Usuario o contraseña incorrectos');
+      setError('Usuario o contraseña incorrectos');
     }
   };
 
@@ -47,6 +53,9 @@ const LoginScreen = () => {
           placeholderTextColor="#555"
         />
 
+        {/* Mensaje de error */}
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
         {/* Botón de login */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Iniciar sesión</Text>
@@ -72,13 +81,13 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8FFE8', // Fondo verde claro
+    backgroundColor: '#E8FFE8',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   header: {
     width: '100%',
-    backgroundColor: '#4B0082', // Morado
+    backgroundColor: '#4B0082',
     paddingVertical: 15,
     alignItems: 'center',
   },
@@ -102,6 +111,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   loginButton: {
     backgroundColor: '#4B0082',
@@ -129,7 +144,7 @@ const styles = StyleSheet.create({
   footer: {
     width: '100%',
     backgroundColor: '#4B0082',
-    height: 50, // Footer del mismo color que el header
+    height: 50,
   },
 });
 
