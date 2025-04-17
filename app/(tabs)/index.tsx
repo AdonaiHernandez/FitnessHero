@@ -15,7 +15,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         <View style={styles.buttonsRow}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/misChallenges')}>
             <Text style={styles.buttonText}>Challenges</Text>
             </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/viewSteps')}>
