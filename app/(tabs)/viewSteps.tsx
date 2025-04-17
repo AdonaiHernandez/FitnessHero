@@ -1,24 +1,31 @@
-// /src/components/viewSteps.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 
 const ViewSteps: React.FC = () => {
-  const steps = 5320; // Este es un valor fijo de ejemplo, lo puedes cambiar
+  const steps = 5320; // Valor de ejemplo
+  const goal = 10000;
+  const progress = Math.min((steps / goal) * 100, 100);
 
   return (
     <View style={styles.container}>
-      <Header/>
-      <Text style={styles.title}>Pasos del Día</Text>
-      <View style={styles.counterContainer}>
-        <Text style={styles.steps}>{steps}</Text>
-        <Text style={styles.subtitle}>pasos</Text>
+      <Header />
+      <View style={styles.mainContent}>
+        <Text style={styles.title}>Pasos del Día</Text>
+
+        <View style={styles.stepsBox}>
+          <Text style={styles.stepsText}>{steps}</Text>
+          <Text style={styles.label}>pasos</Text>
+        </View>
+
+        <View style={styles.progressContainer}>
+          <View style={[styles.progressBar, { width: `${progress}%` }]} />
+        </View>
+
+        <Text style={styles.goalText}>Meta: {goal} pasos</Text>
       </View>
-      <View style={styles.progressBarContainer}>
-        <View style={[styles.progressBar, { width: `${(steps / 10000) * 100}%` }]} />
-      </View>
-      <Footer/>
+      <Footer />
     </View>
   );
 };
@@ -26,43 +33,56 @@ const ViewSteps: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#4B0082',
+  },
+  mainContent: {
+    flex: 1,
+    backgroundColor: '#E6FFE6',
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff',
-    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#4B0082',
+    marginBottom: 30,
+    textAlign: 'center',
   },
-  counterContainer: {
-    flexDirection: 'row',
+  stepsBox: {
+    backgroundColor: '#6A0DAD',
+    padding: 30,
+    borderRadius: 20,
+    marginBottom: 30,
     alignItems: 'center',
-    marginVertical: 20,
+    width: '80%',
   },
-  steps: {
+  stepsText: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#2e8b57',
+    color: '#FFF',
   },
-  subtitle: {
+  label: {
     fontSize: 18,
-    color: '#888',
-    marginLeft: 5,
+    color: '#FFF',
+    marginTop: 5,
   },
-  progressBarContainer: {
-    width: '100%',
-    height: 10,
+  progressContainer: {
+    width: '80%',
+    height: 14,
     backgroundColor: '#ddd',
-    borderRadius: 5,
+    borderRadius: 10,
     overflow: 'hidden',
-    marginTop: 10,
+    marginBottom: 10,
   },
   progressBar: {
     height: '100%',
     backgroundColor: '#2e8b57',
-    borderRadius: 5,
+  },
+  goalText: {
+    fontSize: 16,
+    color: '#4B0082',
+    marginTop: 5,
   },
 });
 

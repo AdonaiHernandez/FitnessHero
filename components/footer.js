@@ -11,7 +11,7 @@ export default function Footer() {
         <Image source={require('../assets/images/ranking.png')} style={styles.footerImage} />
         <Text style={styles.footerText}>Rankings</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerItem} onPress={() => router.push('/index')}>
+      <TouchableOpacity style={styles.footerItem} onPress={() => router.push('/')}>
         <IconSymbol size={28} name="house.fill" color="#FFF" />
         <Text style={styles.footerText}>Home</Text>
       </TouchableOpacity>
