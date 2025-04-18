@@ -31,7 +31,7 @@ export default function Header() {
       </TouchableOpacity>
       <Text style={styles.username}>Usuario</Text>
       <View style={styles.coinsContainer}>
-        <Text style={styles.coinsText}>120</Text>
+        <Text style={styles.coinsText}>0</Text>
         <Image source={require('../assets/images/coin.png')} style={styles.coinImage} />
       </View>
     </View>
