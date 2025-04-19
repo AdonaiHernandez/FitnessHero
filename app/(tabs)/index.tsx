@@ -10,7 +10,7 @@ export default function HomeScreen() {
       <Header/>
       {/* Contenido principal */}
       <View style={styles.mainContent}>
-        <TouchableOpacity style={styles.avatarContainer} onPress={() => router.push('/avatar')}>
+        <TouchableOpacity style={styles.avatarContainer} onPress={() => router.push('/minimalAvatar')}>
           <Text style={styles.avatarText}>Avatar</Text>
         </TouchableOpacity>
 

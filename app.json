@@ -32,6 +32,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+      "expo-asset",
+      {
+        "assets": ["./assets/objects/model1/model1.obj"]
+      }
       ]
     ],
     "experiments": {
