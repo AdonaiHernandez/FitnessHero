@@ -1,9 +1,10 @@
 // header.tsx
+import React from 'react';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Header() {
   const router = useRouter();
@@ -11,17 +12,21 @@ export default function Header() {
   const [username, setUsername] = useState('Usuario');
   const [coins, setCoins] = useState(0);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
-      const storedUsername = await AsyncStorage.getItem('username');
-      const storedCoins = await AsyncStorage.getItem('coins');
-      setLoggedIn(isLoggedIn === 'true');
-      if (storedUsername) setUsername(storedUsername);
-      if (storedCoins) setCoins(parseInt(storedCoins));
-    };
-    loadData();
-  }, []);
+  const loadData = async () => {
+    const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+    const storedUsername = await AsyncStorage.getItem('username');
+    const storedCoins = await AsyncStorage.getItem('coins');
+    setLoggedIn(isLoggedIn === 'true');
+    if (storedUsername) setUsername(storedUsername);
+    if (storedCoins) setCoins(parseInt(storedCoins));
+    else setCoins(0);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   const handlePress = () => {
     router.push(loggedIn ? '/profile' : '/login');

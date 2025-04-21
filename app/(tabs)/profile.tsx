@@ -9,10 +9,10 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('isLoggedIn');
+    await AsyncStorage.multiRemove(['isLoggedIn', 'username', 'coins']);
     Alert.alert('Has cerrado sesión');
     router.push('/login');
-  };
+  };  
 
   return (
     <View style={styles.container}>
