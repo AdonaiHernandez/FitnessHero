@@ -11,7 +11,7 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     await AsyncStorage.multiRemove(['isLoggedIn', 'username', 'coins']);
     Alert.alert('Has cerrado sesión');
-    router.push('/login');
+    router.push('/');
   };  
 
   return (
