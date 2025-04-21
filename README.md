@@ -48,3 +48,21 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Generar la APK
+
+Create needed files with build:configure.
+With eas credentials generate the keystore to sign the APK (this SHA1 is used in the credentials for Google Cloud).
+With eas build you get the apk in the eas platform to download.
+
+```bash
+eas build:configure
+eas credentials
+eas build --platform android --profile preview
+```
+
+If you are using npx expo run:android for testing you need to get the SHA1 in the "android\app\debug.keystore" and add this one to Google Cloud
+
+```bash>
+npx expo run:android
+```
