@@ -52,8 +52,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 25,
     backgroundColor: '#4B0082',
-    marginTop: 25,
-    marginLeft: 35,
   },
   username: { color: '#FFF', fontSize: 24, fontWeight: 'bold' },
   coinsContainer: { flexDirection: 'row', alignItems: 'center' },

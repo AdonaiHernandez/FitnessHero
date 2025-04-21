@@ -1,9 +1,11 @@
 // StoreScreen.tsx
-import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions, SafeAreaView } from 'react-native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 
 const items = [
   { id: '1', name: 'Gafas deportivas', price: 15, image: require('@/assets/images/gym-shop.png') },
@@ -17,16 +19,18 @@ const items = [
 export default function StoreScreen() {
   const [coins, setCoins] = useState(0);
 
-  useEffect(() => {
-    const fetchCoins = async () => {
-      const savedCoins = await AsyncStorage.getItem('coins');
-      if (savedCoins) setCoins(parseInt(savedCoins));
-    };
-    fetchCoins();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchCoins = async () => {
+        const savedCoins = await AsyncStorage.getItem('coins');
+        if (savedCoins) setCoins(parseInt(savedCoins));
+      };
+      fetchCoins();
+    }, [])
+  );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header />
       <View style={styles.mainContent}>
         <Text style={styles.title}>Tienda de Accesorios</Text>
@@ -36,6 +40,7 @@ export default function StoreScreen() {
           keyExtractor={(item) => item.id}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.grid}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={styles.card}>
               <Image source={item.image} style={styles.image} />
@@ -53,53 +58,67 @@ export default function StoreScreen() {
         />
       </View>
       <Footer />
-    </View>
+    </SafeAreaView>
   );
 }
 
-const cardWidth = (Dimensions.get('window').width - 60) / 2;
+const screenWidth = Dimensions.get('window').width;
+const cardWidth = (screenWidth - 60) / 2;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#4B0082' },
-  mainContent: { flex: 1, padding: 20, backgroundColor: '#E6FFE6' },
+  container: {
+    flex: 1,
+    backgroundColor: '#4B0082',
+  },
+  mainContent: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#F5F5FF',
+  },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontSize: 22,
+    fontWeight: '700',
     color: '#4B0082',
+    marginBottom: 20,
     textAlign: 'center',
   },
-  grid: { gap: 15 },
-  row: { justifyContent: 'space-between', marginBottom: 20 },
+  grid: {
+    paddingBottom: 20,
+  },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   card: {
-    backgroundColor: '#6A0DAD',
-    borderRadius: 12,
-    padding: 10,
     width: cardWidth,
+    backgroundColor: '#6A0DAD',
+    borderRadius: 16,
+    padding: 12,
     alignItems: 'center',
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   image: {
-    width: '100%',
+    width: '50%',
     height: 100,
+    borderRadius: 10,
     resizeMode: 'cover',
-    borderRadius: 8,
     marginBottom: 10,
   },
   itemName: {
-    fontWeight: 'bold',
-    color: '#FFF',
     fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 4,
   },
   itemPrice: {
-    color: '#FFD700',
-    fontWeight: 'bold',
     fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFD700',
   },
   notEnough: {
     color: '#FF4D4D',

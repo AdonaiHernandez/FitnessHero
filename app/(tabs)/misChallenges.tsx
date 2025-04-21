@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 type Challenge = {
   id: number;
@@ -57,12 +59,17 @@ const ChallengesScreen = () => {
   if (!isLoggedIn) {
     return (
       <View style={styles.container}>
-        <Text style={styles.loginMessage}>Por favor, inicie sesión para ver los retos.</Text>
-        <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/login')}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        <Header />
+        <View style={styles.content}>
+          <Text style={styles.loginMessage}>Por favor, inicie sesión para ver los retos.</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/login')}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <Footer />
       </View>
     );
+    
   }
 
   const remainingChallenges = challengesData.filter(
@@ -71,16 +78,19 @@ const ChallengesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🏆 Retos disponibles</Text>
-      <Text style={styles.coins}>💰 Monedas: {coins}</Text>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
-        <TouchableOpacity
-          style={[styles.completeButton, { backgroundColor: '#32CD32', flex: 1, marginRight: 5 }]}
-          onPress={() => router.push('/crearRetoAmigo')}
-        >
-          <Text style={styles.buttonText}>👥 Crear reto</Text>
-        </TouchableOpacity>
+      <Header />
+      <View style={styles.content}>
+        <Text style={styles.title}>🏆 Retos disponibles</Text>
+        <Text style={styles.coins}>💰 Monedas: {coins}</Text>
+  
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
+          <TouchableOpacity
+            style={[styles.completeButton, { backgroundColor: '#32CD32', flex: 1, marginRight: 5 }]}
+            onPress={() => router.push('/crearRetoAmigo')}
+          >
+            <Text style={styles.buttonText}>👥 Crear reto</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Botón para reiniciar retos, para probar administrador(descomentar para ello)*/}
         {/* 
@@ -96,41 +106,46 @@ const ChallengesScreen = () => {
           <Text style={styles.buttonText}>🔁 Reiniciar retos</Text>
         </TouchableOpacity> 
         */}
-
+  
+        {remainingChallenges.length === 0 ? (
+          <Text style={styles.allCompleted}>🎉 ¡Todos los retos han sido completados!</Text>
+        ) : (
+          <FlatList
+            data={remainingChallenges}
+            keyExtractor={item => item.id.toString()}
+            numColumns={2}
+            contentContainerStyle={{ paddingBottom: 100 }} // Espacio para que el Footer no tape nada
+            renderItem={({ item }) => (
+              <View style={styles.challengeCard}>
+                <Text style={styles.challengeTitle}>{item.title}</Text>
+                <Text style={styles.challengeDescription}>{item.description}</Text>
+                <Text style={styles.challengeReward}>🏅 Recompensa: {item.reward} monedas</Text>
+                <TouchableOpacity
+                  style={styles.completeButton}
+                  onPress={() => completeChallenge(item)}
+                >
+                  <Text style={styles.buttonText}>Completar reto</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        )}
       </View>
-
-      {remainingChallenges.length === 0 ? (
-        <Text style={styles.allCompleted}>🎉 ¡Todos los retos han sido completados!</Text>
-      ) : (
-        <FlatList
-          data={remainingChallenges}
-          keyExtractor={item => item.id.toString()}
-          numColumns={2} // Para mostrar dos columnas
-          renderItem={({ item }) => (
-            <View style={styles.challengeCard}>
-              <Text style={styles.challengeTitle}>{item.title}</Text>
-              <Text style={styles.challengeDescription}>{item.description}</Text>
-              <Text style={styles.challengeReward}>🏅 Recompensa: {item.reward} monedas</Text>
-              <TouchableOpacity
-                style={styles.completeButton}
-                onPress={() => completeChallenge(item)}
-              >
-                <Text style={styles.buttonText}>Completar reto</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      )}
+      <Footer />
     </View>
-  );
+  );  
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E8FFE8',
-    padding: 20,
   },
+  content: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },  
   title: {
     fontSize: 22,
     fontWeight: 'bold',
