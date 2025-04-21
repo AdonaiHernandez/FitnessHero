@@ -21,11 +21,11 @@ const LoginScreen = () => {
     if (username === correctUsername && password === correctPassword) {
       setError('');
       await AsyncStorage.setItem('isLoggedIn', 'true');
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('coins', '10'); //Recompensa de inicio
       Alert.alert('Login exitoso');
       router.push('/');
-    } else {
-      setError('Usuario o contraseña incorrectos');
-    }
+    }    
   };
 
   return (
