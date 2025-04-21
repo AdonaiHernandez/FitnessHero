@@ -47,6 +47,7 @@ export default function Viewer() {
                     if (gltf.animations && gltf.animations.length > 0) {
                       mixer = new THREE.AnimationMixer(model);
                       gltf.animations.forEach((clip) => {
+                        if (clip.name == "Walk")
                         mixer.clipAction(clip).play();
                       });
                     }
