@@ -45,6 +45,16 @@
           model.position.set(0, -1, 0); // Ajuste en la posición
           scene.add(model);
 
+          model.traverse((child) => {
+            if (child.isMesh && child.material) {
+                // Verifica si este material ya fue clonado por otro mesh
+                if (!child.material._cloned) {
+                child.material = child.material.clone(); // Esto fuerza un nuevo UUID
+                child.material._cloned = true; // Marca como clonado para no repetir
+                }
+            }
+        });
+
           const walkClip = gltf.animations.find((clip) => true);
           if (walkClip) {
             mixer = new THREE.AnimationMixer(model);
@@ -80,7 +90,7 @@
         loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/images/"+color, (texture) => {
             textura_camiseta_roja = texture;
             model.traverse(function (child) {
-            if (child.isMesh && child.name === 'Male_tshirt') {
+            if (child.isMesh && child.name === partName) {
               child.material.map = textura_camiseta_roja;
               child.material.needsUpdate = true;
             }

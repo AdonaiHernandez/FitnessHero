@@ -70,7 +70,22 @@ export default function Viewer() {
         selectedValue={selectedValue}
         style={{ height: 50, width: 200 }}
         onValueChange={(itemValue, itemIndex) => {
+          enviarMensaje("tshirt",itemValue);
+
+          // Aquí puedes llamar a tu función para cambiar la textura:
+          // setHairTexture(itemValue);
+        }}
+      >
+        <Picker.Item label="Red" value="red" />
+        <Picker.Item label="Green" value="green" />
+      </Picker>
+      <Text>Shorts Color</Text>
+      <Picker
+        selectedValue={selectedValue}
+        style={{ height: 50, width: 200 }}
+        onValueChange={(itemValue, itemIndex) => {
           enviarMensaje("shorts",itemValue);
+          
           // Aquí puedes llamar a tu función para cambiar la textura:
           // setHairTexture(itemValue);
         }}
