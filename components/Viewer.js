@@ -53,12 +53,15 @@ export default function Viewer() {
             <canvas id="canvas" style="width:100vw;height:100vh;"></canvas>
             <script>
              
-              /*let textura_camiseta_roja = null;
+              let textura_camiseta_roja = null;
+              try{
               const loader = new THREE.TextureLoader();
-              loader.load("", (texture) => {
+              loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/images/textura_camiseta_roja.png", (texture) => {
                   textura_camiseta_roja = texture;
-                })
-              */
+                }, null, (e) => {
+                  alert(e.statusText);
+                  })
+              } catch(e) { alert(e) }
               const binary = atob("${base64}");
               const bytes = new Uint8Array(binary.length);
               for (let i = 0; i < binary.length; i++) {
@@ -117,17 +120,17 @@ export default function Viewer() {
               });
 
               function changeModelColor(partName, color) {
-                alert("Color: " + partName);
-                const pelo = model.getObjectByName(partName);
-                alert( color);
-                if (pelo) {
-                  pelo.traverse(function (child) {
-                    if (child.isMesh) {
-                      child.material.map = textura_camiseta_roja;
-                      child.material.needsUpdate = true;
-                    }
-                  });
-                }
+                //alert("Color: " + partName);
+                const pelo = model.getObjectByName("Male_hair");
+                //alert( textura_camiseta_roja.toString());
+                
+                model.traverse(function (child) {
+                  if (child.isMesh && child.name === 'Male_tshirt') {
+                    child.material.map = textura_camiseta_roja;
+                    child.material.needsUpdate = true;
+                  }
+                });
+                
               }
             </script>
           </body>
