@@ -14,9 +14,9 @@ export default function Viewer() {
     "tshirt": "Male_tshirt"
   }
   const colors = {
-    "red": "0xff0000",
+    "red": "rojo.jpg",
     "blue": "0x0000ff",
-    "green": "0x00ff00"
+    "green": "verde.jpg"
   }
   const enviarMensaje = (part, color) => {
     if (webViewRef.current) {
@@ -54,14 +54,7 @@ export default function Viewer() {
             <script>
              
               let textura_camiseta_roja = null;
-              try{
-              const loader = new THREE.TextureLoader();
-              loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/images/textura_camiseta_roja.png", (texture) => {
-                  textura_camiseta_roja = texture;
-                }, null, (e) => {
-                  alert(e.statusText);
-                  })
-              } catch(e) { alert(e) }
+              
               const binary = atob("${base64}");
               const bytes = new Uint8Array(binary.length);
               for (let i = 0; i < binary.length; i++) {
@@ -123,13 +116,23 @@ export default function Viewer() {
                 //alert("Color: " + partName);
                 const pelo = model.getObjectByName("Male_hair");
                 //alert( textura_camiseta_roja.toString());
-                
-                model.traverse(function (child) {
+
+                try{
+              const loader = new THREE.TextureLoader();
+              loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/images/"+color, (texture) => {
+                  textura_camiseta_roja = texture;
+                  model.traverse(function (child) {
                   if (child.isMesh && child.name === 'Male_tshirt') {
                     child.material.map = textura_camiseta_roja;
                     child.material.needsUpdate = true;
                   }
                 });
+                }, null, (e) => {
+                  alert(e.statusText);
+                  })
+              } catch(e) { alert(e) }
+                
+                
                 
               }
             </script>
