@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 25,
+    padding: 35,
     backgroundColor: '#4B0082',
   },
   username: { color: '#FFF', fontSize: 24, fontWeight: 'bold' },
