@@ -1,36 +1,59 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [checkingLogin, setCheckingLogin] = useState(true);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+      if (isLoggedIn !== 'true') {
+        router.replace('/login');
+      } else {
+        setCheckingLogin(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  if (checkingLogin) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4B0082" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Header/>
-      {/* Contenido principal */}
+      <Header />
       <View style={styles.mainContent}>
         <TouchableOpacity style={styles.avatarContainer} onPress={() => router.push('/avatar')}>
-          <Text style={styles.avatarText } >Avatar</Text>
+          <Text style={styles.avatarText}>Avatar</Text>
         </TouchableOpacity>
-
         <View style={styles.buttonsRow}>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/misChallenges')}>
             <Text style={styles.buttonText}>Challenges</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/viewSteps')}>
             <Text style={styles.buttonText}>Steps</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
         </View>
       </View>
-      <Footer/>
+      <Footer />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#4B0082' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#E6FFE6' },
   mainContent: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#E6FFE6' },
   avatarContainer: { width: 200, height: 150, borderRadius: 50, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center' },
   avatarText: { color: '#000', fontWeight: 'bold', fontSize: 20 },
@@ -38,4 +61,3 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#6A0DAD', padding: 10, borderRadius: 10, marginHorizontal: 10, width: 150, height: 50, justifyContent: 'center' },
   buttonText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center', fontSize: 18 },
 });
-
