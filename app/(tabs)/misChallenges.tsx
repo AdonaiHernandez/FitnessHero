@@ -1,29 +1,33 @@
-import React, {useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { useSteps } from '../googleApi';
 
 type Challenge = {
   id: number;
   title: string;
   description: string;
   reward: number;
-  type: 'daily' | 'friend'; // Tipo de reto
+  type: 'daily' | 'friend';
+  stepGoal?: number;
 };
 
 const challengesData: Challenge[] = [
-  { id: 1, title: 'Camina 5000 pasos', description: 'Alcanza 5000 pasos en un día', reward: 5, type: 'daily' },
+  { id: 1, title: 'Camina 5000 pasos', description: 'Alcanza 5000 pasos en un día', reward: 5, type: 'daily', stepGoal: 5000 },
   { id: 2, title: 'Desafío de yoga', description: 'Haz 20 minutos de yoga', reward: 8, type: 'daily' },
   { id: 3, title: 'Trote ligero', description: 'Corre 2 kilómetros', reward: 6, type: 'daily' },
   { id: 4, title: 'Eduardo', description: 'Hacer más flexiones en un día', reward: 10, type: 'friend' },
   { id: 5, title: 'Jose', description: 'Beber más agua en un día', reward: 7, type: 'friend' },
+  { id: 6, title: 'Da 20 pasos', description: 'Alcanza 20 pasos', reward: 1, type: 'daily', stepGoal: 20 },
 ];
-const router = useRouter();
 
 const ChallengesScreen = () => {
+  const steps = useSteps();
+  const router = useRouter();
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([]);
   const [coins, setCoins] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -34,27 +38,47 @@ const ChallengesScreen = () => {
         const storedCompleted = await AsyncStorage.getItem('completedChallenges');
         const storedCoins = await AsyncStorage.getItem('coins');
         const loggedIn = await AsyncStorage.getItem('isLoggedIn');
-  
+
         if (storedCompleted) setCompletedChallenges(JSON.parse(storedCompleted));
         if (storedCoins) setCoins(parseInt(storedCoins, 10));
         setIsLoggedIn(loggedIn === 'true');
       };
-  
       loadData();
     }, [])
   );
-  const completeChallenge = async (challenge: Challenge) => {
-    if (completedChallenges.includes(challenge.id)) return;
 
-    const updated = [...completedChallenges, challenge.id];
-    const newCoins = coins + challenge.reward;
+  useEffect(() => {
+    const checkStepChallenges = async () => {
+      const newlyCompleted: number[] = [];
 
-    setCompletedChallenges(updated);
-    setCoins(newCoins);
+      for (const challenge of challengesData) {
+        if (
+          challenge.stepGoal &&
+          steps >= challenge.stepGoal &&
+          !completedChallenges.includes(challenge.id)
+        ) {
+          newlyCompleted.push(challenge.id);
+        }
+      }
 
-    await AsyncStorage.setItem('completedChallenges', JSON.stringify(updated));
-    await AsyncStorage.setItem('coins', newCoins.toString());
-  };
+      if (newlyCompleted.length > 0) {
+        const updated = [...completedChallenges, ...newlyCompleted];
+        const earnedCoins = newlyCompleted.reduce(
+          (sum, id) => sum + (challengesData.find(c => c.id === id)?.reward || 0),
+          0
+        );
+        const newCoins = coins + earnedCoins;
+
+        setCompletedChallenges(updated);
+        setCoins(newCoins);
+
+        await AsyncStorage.setItem('completedChallenges', JSON.stringify(updated));
+        await AsyncStorage.setItem('coins', newCoins.toString());
+      }
+    };
+
+    checkStepChallenges();
+  }, [steps]);
 
   if (!isLoggedIn) {
     return (
@@ -69,7 +93,6 @@ const ChallengesScreen = () => {
         <Footer />
       </View>
     );
-    
   }
 
   const remainingChallenges = challengesData.filter(
@@ -82,7 +105,7 @@ const ChallengesScreen = () => {
       <View style={styles.content}>
         <Text style={styles.title}>🏆 Retos disponibles</Text>
         <Text style={styles.coins}>💰 Monedas: {coins}</Text>
-  
+
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
           <TouchableOpacity
             style={[styles.completeButton, { backgroundColor: '#32CD32', flex: 1, marginRight: 5 }]}
@@ -92,21 +115,6 @@ const ChallengesScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Botón para reiniciar retos, para probar administrador(descomentar para ello)*/}
-        {/* 
-        <TouchableOpacity
-          style={[styles.completeButton, { backgroundColor: 'orange', flex: 1, marginLeft: 5 }]}
-          onPress={async () => {
-          await AsyncStorage.setItem('completedChallenges', JSON.stringify([]));
-          await AsyncStorage.setItem('coins', '0');
-          setCompletedChallenges([]);
-          setCoins(0);
-          }}
-        >
-          <Text style={styles.buttonText}>🔁 Reiniciar retos</Text>
-        </TouchableOpacity> 
-        */}
-  
         {remainingChallenges.length === 0 ? (
           <Text style={styles.allCompleted}>🎉 ¡Todos los retos han sido completados!</Text>
         ) : (
@@ -114,18 +122,21 @@ const ChallengesScreen = () => {
             data={remainingChallenges}
             keyExtractor={item => item.id.toString()}
             numColumns={2}
-            contentContainerStyle={{ paddingBottom: 100 }} // Espacio para que el Footer no tape nada
+            contentContainerStyle={{ paddingBottom: 100 }}
             renderItem={({ item }) => (
               <View style={styles.challengeCard}>
                 <Text style={styles.challengeTitle}>{item.title}</Text>
                 <Text style={styles.challengeDescription}>{item.description}</Text>
                 <Text style={styles.challengeReward}>🏅 Recompensa: {item.reward} monedas</Text>
-                <TouchableOpacity
-                  style={styles.completeButton}
-                  onPress={() => completeChallenge(item)}
-                >
-                  <Text style={styles.buttonText}>Completar reto</Text>
-                </TouchableOpacity>
+                {item.stepGoal ? (
+                  <Text style={{ color: '#4B0082', marginTop: 5 }}>
+                    Progreso: {Math.min(steps, item.stepGoal)}/{item.stepGoal} pasos
+                  </Text>
+                ) : (
+                  <Text style={{ color: 'gray', fontStyle: 'italic' }}>
+                    Este reto debe completarse manualmente
+                  </Text>
+                )}
               </View>
             )}
           />
@@ -133,7 +144,7 @@ const ChallengesScreen = () => {
       </View>
       <Footer />
     </View>
-  );  
+  );
 };
 
 
