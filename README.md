@@ -48,3 +48,43 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Debug APK (this one only works while mobile is connected)
+
+If you are using npx expo run:android for testing you need to get the SHA1 in the "android\app\debug.keystore" and add this one to Google Cloud
+
+```bash
+npx expo run:android
+```
+
+## Generar la APK
+
+Create needed files with build:configure for the project, this oneis already configured.
+
+```bash
+eas build:configure
+```
+
+In case your not logged in eas
+
+```bash
+eas login
+```
+
+To make sure your logged in eas
+
+```bash
+eas whoami
+```
+
+eas credentials generates the keystore to sign the APK (this SHA1 is used in the credentials for Google Cloud).
+
+```bash
+eas credentials
+```
+
+eas build you get the apk in the eas platform to download.
+
+```bash
+eas build --platform android --profile preview
+```
