@@ -2,9 +2,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Viewer from '@/components/Viewer';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import React from 'react';
 
 
-export default function avatar() {
+export default function Avatar() {
   return (
     <View style={styles.container}>
       <Header />
@@ -12,8 +13,7 @@ export default function avatar() {
               <Text style={styles.title}>Avatar</Text>
               <Viewer/>
             </View>
-            <Footer />
-      
+      <Footer />
     </View>
   );
 }

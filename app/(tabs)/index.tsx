@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useRouter } from 'expo-router';

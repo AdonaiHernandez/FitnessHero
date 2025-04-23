@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import React from 'react';
 
 const rankings = [
   { id: '1', name: 'Tú', steps: 12000 },
