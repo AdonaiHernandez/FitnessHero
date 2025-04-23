@@ -56,5 +56,5 @@ const styles = StyleSheet.create({
   username: { color: '#FFF', fontSize: 24, fontWeight: 'bold' },
   coinsContainer: { flexDirection: 'row', alignItems: 'center' },
   coinsText: { color: '#FFD700', fontSize: 18 },
-  countImage: { width: 28, height: 28 },
+  countImage: { width: 40, height: 40 },
 });
