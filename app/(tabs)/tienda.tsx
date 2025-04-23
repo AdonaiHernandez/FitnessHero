@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    width: cardWidth,
+    maxWidth: cardWidth,
     backgroundColor: '#6A0DAD',
     borderRadius: 16,
     padding: 12,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   image: {
-    width: '50%',
+    maxWidth: '50%',
     height: 100,
     borderRadius: 10,
     resizeMode: 'cover',
