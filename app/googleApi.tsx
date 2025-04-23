@@ -1,10 +1,12 @@
-// App.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { useEffect, useState } from 'react';
 import GoogleFit, { Scopes } from 'react-native-google-fit';
 import { PermissionsAndroid, Platform } from 'react-native';
 
-async function requestActivityPermission() {
+const options = {
+  scopes: [Scopes.FITNESS_ACTIVITY_READ],
+};
+
+export async function requestActivityPermission() {
   if (Platform.OS === 'android' && Platform.Version >= 29) {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION,
@@ -19,70 +21,71 @@ async function requestActivityPermission() {
   return true;
 }
 
-
-export default function App() {
-  const [authorized, setAuthorized] = useState(false);
-  const [steps, setSteps] = useState(0);
-
-  const options = {
-    scopes: [
-      Scopes.FITNESS_ACTIVITY_READ,
-    ],
-  };
-
-  const checkFit = async () => {
-    const permissionGranted = await requestActivityPermission();
-    if (!permissionGranted) {
+export async function authorizeGoogleFit(): Promise<boolean> {
+  const permissionGranted = await requestActivityPermission();
+  if (!permissionGranted) {
     console.log('Permiso de actividad no concedido');
-    return;
+    return false;
+  }
+
+  try {
+    const authResult = await GoogleFit.authorize(options);
+    if (authResult.success) {
+      return true;
+    } else {
+      console.log('Auth failed:', authResult.message);
+      return false;
     }
-    GoogleFit.authorize(options)
-      .then(authResult => {
-        if (authResult.success) {
-          setAuthorized(true);
-          fetchSteps();
-        } else {
-          console.log('Auth failed', authResult.message);
-        }
-      })
-      .catch(() => {
-        console.log('Auth error');
-      });
+  } catch (error) {
+    console.log('Auth error:', error);
+    return false;
+  }
+}
+
+export async function getSteps(): Promise<number> {
+  const range = {
+    startDate: new Date().setHours(0, 0, 0, 0),
+    endDate: new Date().toISOString(),
   };
 
-  const fetchSteps = () => {
-    const options = {
-      startDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 24 hours ago
-      endDate: new Date().toISOString(),
+  try {
+    const res = await GoogleFit.getDailyStepCountSamples({
+      startDate: new Date(range.startDate).toISOString(),
+      endDate: range.endDate,
+    });
+
+    const stepsData = res.find(item => item.source === 'com.google.android.gms:estimated_steps');
+    if (stepsData && stepsData.steps.length > 0) {
+      return stepsData.steps[0].value;
+    }
+    return 0;
+  } catch (err) {
+    console.warn('Error getting steps', err);
+    return 0;
+  }
+}
+
+export function useSteps(intervalMs = 5000) {
+  const [steps, setSteps] = useState<number>(0);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchSteps = async () => {
+      const currentSteps = await getSteps();
+      if (mounted) {
+        setSteps(currentSteps);
+      }
     };
 
-    GoogleFit.getDailyStepCountSamples(options)
-      .then(res => {
-        const stepsData = res.find(item => item.source === 'com.google.android.gms:estimated_steps');
-        console.log("llegast a la respuesta",res);
-        console.log("stepsData",stepsData);
-        if (stepsData && stepsData.steps.length > 0) {
-          const totalSteps = stepsData.steps[0].value;
-          setSteps(totalSteps);
-        } else {
-          setSteps(0);
-        }
-      })
-      .catch(err => {
-        console.warn('Error getting steps', err);
-      });
-  };
+    fetchSteps(); // First call
+    const interval = setInterval(fetchSteps, intervalMs);
 
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
-      <Text style={{ color: 'white', fontSize: 18, marginBottom: 10 }}>
-        Google Fit autorizado: {authorized ? 'Sí' : 'No'}
-      </Text>
-      <Text style={{ color: 'white', fontSize: 18, marginBottom: 20 }}>
-        PASOS (último día): {steps}
-      </Text>
-      <Button title="Conectar con Google Fit" onPress={checkFit} />
-    </View>
-  );
-  
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, [intervalMs]);
+
+  return steps;
 }
