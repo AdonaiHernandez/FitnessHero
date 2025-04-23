@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { useSteps } from '../googleApi';
 
 const ViewSteps: React.FC = () => {
-  const steps = 5320; // Valor de ejemplo
+  const steps = useSteps();
   const goal = 10000;
   const progress = Math.min((steps / goal) * 100, 100);
 

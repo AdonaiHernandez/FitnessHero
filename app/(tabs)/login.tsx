@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { authorizeGoogleFit } from '../googleApi';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -12,9 +13,15 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     const correctUsername = 'usuario';
     const correctPassword = 'contraseña';
+    const success = await authorizeGoogleFit();
 
     if (!username || !password) {
       setError('Por favor, completa todos los campos');
+      return;
+    }
+
+    if (!success) {
+      setError('Es obligatorio aceptar los permisos');
       return;
     }
 
