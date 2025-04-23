@@ -89,3 +89,14 @@ export function useSteps(intervalMs = 5000) {
 
   return steps;
 }
+
+export function isAuthorizedGoogleFit(): boolean {
+  return GoogleFit.isAuthorized;
+}
+
+export async function initGoogleFit(): Promise<boolean> {
+  if (isAuthorizedGoogleFit()) {
+    return true;
+  }
+  return await authorizeGoogleFit();
+}

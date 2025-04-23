@@ -1,13 +1,41 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import { useSteps } from '../googleApi';
+import { useSteps, initGoogleFit } from '../googleApi';
 
 const ViewSteps: React.FC = () => {
-  const steps = useSteps();
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const steps = useSteps(authorized ? 5000 : undefined);
   const goal = 10000;
   const progress = Math.min((steps / goal) * 100, 100);
+
+  useEffect(() => {
+    const init = async () => {
+      const auth = await initGoogleFit();
+      setAuthorized(auth);
+    };
+    init();
+  }, []);
+
+  if (authorized === null) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <ActivityIndicator size="large" color="#FFF" />
+        <Text style={{ color: '#FFF', marginTop: 10 }}>Cargando Google Fit...</Text>
+      </View>
+    );
+  }
+
+  if (!authorized) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <Text style={{ color: '#FFF', fontSize: 18, padding: 20, textAlign: 'center' }}>
+          Google Fit no está autorizado. Por favor, vuelve a la pantalla de inicio de sesión para conectar tu cuenta.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -32,6 +60,11 @@ const ViewSteps: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#4B0082',

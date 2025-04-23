@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import { useSteps } from '../googleApi';
+import { useSteps, initGoogleFit } from '../googleApi';
 
 type Challenge = {
   id: number;
@@ -26,6 +26,7 @@ const challengesData: Challenge[] = [
 ];
 
 const ChallengesScreen = () => {
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
   const steps = useSteps();
   const router = useRouter();
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([]);
@@ -48,6 +49,11 @@ const ChallengesScreen = () => {
   );
 
   useEffect(() => {
+    const init = async () => {
+      const auth = await initGoogleFit();
+      setAuthorized(auth);
+    };
+
     const checkStepChallenges = async () => {
       const newlyCompleted: number[] = [];
 
@@ -76,7 +82,7 @@ const ChallengesScreen = () => {
         await AsyncStorage.setItem('coins', newCoins.toString());
       }
     };
-
+    init();
     checkStepChallenges();
   }, [steps]);
 
@@ -98,6 +104,25 @@ const ChallengesScreen = () => {
   const remainingChallenges = challengesData.filter(
     challenge => !completedChallenges.includes(challenge.id)
   );
+
+  if (authorized === null) {
+      return (
+        <View style={[styles.container, styles.center]}>
+          <ActivityIndicator size="large" color="#FFF" />
+          <Text style={{ color: '#FFF', marginTop: 10 }}>Cargando Google Fit...</Text>
+        </View>
+      );
+    }
+  
+    if (!authorized) {
+      return (
+        <View style={[styles.container, styles.center]}>
+          <Text style={{ color: '#FFF', fontSize: 18, padding: 20, textAlign: 'center' }}>
+            Google Fit no está autorizado. Por favor, vuelve a la pantalla de inicio de sesión para conectar tu cuenta.
+          </Text>
+        </View>
+      );
+    }
 
   return (
     <View style={styles.container}>
@@ -149,6 +174,11 @@ const ChallengesScreen = () => {
 
 
 const styles = StyleSheet.create({
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#E8FFE8',
