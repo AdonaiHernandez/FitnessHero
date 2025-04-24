@@ -20,7 +20,8 @@ export default function Viewer() {
   }
   const enviarMensaje = (part, color) => {
     if (webViewRef.current) {
-      webViewRef.current.postMessage(JSON.stringify({ action: 'color', part: bodyParts[part], color: colors[color] }));
+      console.log(part);
+      webViewRef.current.postMessage(JSON.stringify({ action: part == "cap" ? "cap" : 'color', part: bodyParts[part], color: colors[color] }));
     }
   };
 
@@ -93,6 +94,8 @@ export default function Viewer() {
         <Picker.Item label="Red" value="red" />
         <Picker.Item label="Green" value="green" />
       </Picker>
+      <Button onPress={() => enviarMensaje("cap",0)}
+      title="Cap"/>
       </View>
       
     </View>

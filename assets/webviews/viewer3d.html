@@ -62,7 +62,6 @@
             const action = mixer.clipAction(walkClip);
             action.play();
           }
-          putCap();
           animate();
         });
 
@@ -80,6 +79,9 @@
           const data = JSON.parse(event.data);
           if (data.action === 'color') {
             changeModelColor(data.part, data.color);
+          }
+          if (data.action === 'cap'){
+            putCap();
           }
         });
 
@@ -106,8 +108,14 @@
           
           
         }
-
+        capPuesto = false;
         function putCap(){
+          if (capPuesto){
+            const headBone = scene.getObjectByName("HeadTop_End");
+            headBone.remove(cap);
+            capPuesto = false;
+            return;
+          }
           loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/models/cap.glb", (glb) =>{
           cap = glb.scene;
           cap.scale.set(14,14,14);
@@ -132,6 +140,7 @@
           });
           const headBone = scene.getObjectByName("HeadTop_End");
           headBone.add(cap);
+          capPuesto = true;
         })
         }
       </script>
