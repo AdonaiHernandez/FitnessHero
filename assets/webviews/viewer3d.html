@@ -37,6 +37,7 @@
 
         const loader = new THREE.GLTFLoader();
         let mixer;
+        let cap;
         const clock = new THREE.Clock();
 
         loader.load(url, function (gltf) {
@@ -61,9 +62,11 @@
             const action = mixer.clipAction(walkClip);
             action.play();
           }
-
+          putCap();
           animate();
         });
+
+        
 
         function animate() {
           requestAnimationFrame(animate);
@@ -102,6 +105,34 @@
           
           
           
+        }
+
+        function putCap(){
+          loader.load("https://raw.githubusercontent.com/AdonaiHernandez/FitnessHero/refs/heads/webview/assets/models/cap.glb", (glb) =>{
+          cap = glb.scene;
+          cap.scale.set(14,14,14);
+          cap.position.set(6, -10, 6);
+          //cap.rotation.set(-90, 0, 0);
+          //scene.add(cap);
+          /*model.traverse(function (child) {
+            console.log(child.name);
+            if (child.isMesh && child.name === "HeadTop_End") {
+              child.add(cap);
+            }
+          });*/
+          const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+
+          // Recorrer la gorra y asignar el material a cada mesh
+          cap.traverse((child) => {
+            if (child.isMesh) {
+              console.log(child);
+              child.map = null;
+              child.material.color.set(0xff0000);
+            }
+          });
+          const headBone = scene.getObjectByName("HeadTop_End");
+          headBone.add(cap);
+        })
         }
       </script>
     </body>
