@@ -13,17 +13,18 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     const correctUsername = 'usuario';
     const correctPassword = 'contraseña';
-    const success = await authorizeGoogleFit();
+    // const success = await authorizeGoogleFit();
 
     if (!username || !password) {
       setError('Por favor, completa todos los campos');
       return;
     }
-
+    /*
     if (!success) {
       setError('Es obligatorio aceptar los permisos');
       return;
     }
+      */
 
     if (username === correctUsername && password === correctPassword) {
       setError('');
@@ -32,7 +33,9 @@ const LoginScreen = () => {
       await AsyncStorage.setItem('coins', '10'); //Recompensa de inicio
       Alert.alert('Login exitoso');
       router.push('/');
-    }    
+    }else if ((password != correctPassword) || (username != correctUsername)) {
+      setError('Usuario o contraseña incorrectos');
+    }
   };
 
   return (
