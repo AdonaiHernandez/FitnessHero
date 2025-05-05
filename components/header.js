@@ -1,9 +1,7 @@
-// header.tsx
-import React from 'react';
-import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function Header() {
@@ -16,10 +14,18 @@ export default function Header() {
     const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
     const storedUsername = await AsyncStorage.getItem('username');
     const storedCoins = await AsyncStorage.getItem('coins');
-    setLoggedIn(isLoggedIn === 'true');
-    if (storedUsername) setUsername(storedUsername);
-    if (storedCoins) setCoins(parseInt(storedCoins));
-    else setCoins(0);
+    
+    if (isLoggedIn === 'true') {
+      setLoggedIn(true);
+      if (storedUsername) setUsername(storedUsername);
+      if (storedCoins) setCoins(parseInt(storedCoins, 10));
+      else setCoins(0);
+    } else {
+      // Si no está logueado, reinicia monedas y no muestra nombre de usuario
+      setLoggedIn(false);
+      setUsername('');
+      setCoins(0);
+    }
   };
 
   useFocusEffect(
@@ -37,7 +43,8 @@ export default function Header() {
       <TouchableOpacity onPress={handlePress}>
         <Image source={require('../assets/images/count.png')} style={styles.countImage} />
       </TouchableOpacity>
-      <Text style={styles.username}>{username}</Text>
+      {/* Mostrar nombre de usuario solo si está logueado */}
+      {loggedIn && <Text style={styles.username}>{username}</Text>}
       <View style={styles.coinsContainer}>
         <Text style={styles.coinsText}>{coins} 🪙</Text>
       </View>

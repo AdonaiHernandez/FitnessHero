@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { ProgressBar } from 'react-native-paper';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const [xp, setXP] = useState<number>(0);
+  const [steps, setSteps] = useState<number>(0);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const storedXP = await AsyncStorage.getItem('xp');
+      const storedSteps = await AsyncStorage.getItem('totalSteps');
+      if (storedXP) setXP(parseInt(storedXP, 10));
+      if (storedSteps) setSteps(parseInt(storedSteps, 10));
+    };
+    loadData();
+  }, []);
+
+  const level = Math.floor(0.1 * Math.sqrt(xp));
+  const xpToNextLevel = Math.pow((level + 1) / 0.1, 2);
+  const xpInLevel = xp - Math.pow(level / 0.1, 2);
+  const xpNeeded = xpToNextLevel - Math.pow(level / 0.1, 2);
+  const progress = xpInLevel / xpNeeded;
 
   const handleLogout = async () => {
-    await AsyncStorage.multiRemove(['isLoggedIn', 'username', 'coins']);
+    await AsyncStorage.multiRemove(['isLoggedIn', 'username', 'coins', 'xp']);
     Alert.alert('Has cerrado sesión');
     router.push('/');
-  };  
+  };
 
   return (
     <View style={styles.container}>
@@ -21,11 +40,17 @@ export default function ProfileScreen() {
         <Text style={styles.title}>Mi Perfil</Text>
         <View style={styles.infoBox}>
           <Text style={styles.infoText}>Nombre: JuanFit</Text>
-          <Text style={styles.infoText}>Nivel: 5</Text>
-          <Text style={styles.infoText}>Pasos totales: 85,000</Text>
+          <Text style={styles.infoText}>
+            Nivel: {level} (XP: {xp} / {Math.round(xpToNextLevel)})
+          </Text>
+          <ProgressBar
+            progress={Math.min(progress, 1)}
+            color="#00FF99"
+            style={{ height: 10, borderRadius: 5, marginBottom: 10 }}
+          />
+          <Text style={styles.infoText}>Pasos totales: {steps.toLocaleString()}</Text>
         </View>
 
-        {/* Botón para cerrar sesión */}
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
         </TouchableOpacity>
