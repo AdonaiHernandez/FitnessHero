@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { View, Text, Alert, StyleSheet } from 'react-native';
 import { verificarRetosPendientes, verificarRetosAceptados, aceptarReto, rechazarReto } from './retoService';
 import { router } from 'expo-router';
+import Constants from 'expo-constants';
 
-const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
+const USER_ID = Constants.expoConfig?.extra?.EXPO_PUBLIC_USER_ID;
 
 let intervalId: NodeJS.Timeout | null = null;
 

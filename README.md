@@ -88,3 +88,9 @@ eas build you get the apk in the eas platform to download.
 ```bash
 eas build --platform android --profile preview
 ```
+
+A la hora de buildear una APK hay que recordar quitar el .env del .gitignore porque al hacer eas build no es capaz de leer los parametros
+
+```bash
+eas build --platform android --profile preview
+```

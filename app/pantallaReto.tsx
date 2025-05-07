@@ -3,8 +3,9 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { db } from './firebaseConfig';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import Constants  from 'expo-constants';
 
-const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
+const USER_ID = Constants.expoConfig?.extra?.EXPO_PUBLIC_USER_ID;
 
 export default function PantallaReto() {
   const { retoId } = useLocalSearchParams();

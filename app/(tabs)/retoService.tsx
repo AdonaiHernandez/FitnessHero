@@ -1,7 +1,10 @@
-const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
-const USER_ID_ENEMY = process.env.EXPO_PUBLIC_USER_ID_ENEMY;
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
 import { router } from 'expo-router';
+import Constants from 'expo-constants';
+
+const USER_ID = Constants.expoConfig?.extra?.EXPO_PUBLIC_USER_ID;
+const USER_ID_ENEMY = Constants.expoConfig?.extra?.EXPO_PUBLIC_USER_ID_ENEMY;
+const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL;
+
 // 1. Crear reto
 export const crearReto = async () => {
   try {
