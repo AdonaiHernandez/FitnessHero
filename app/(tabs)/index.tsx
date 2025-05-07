@@ -5,6 +5,8 @@ import Footer from '@/components/footer';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AvatarPreview from '@/components/avatarPreview';
+import { crearReto } from './retoService';
+import NotificadorDeRetos from './notificadorDeRetos';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -44,12 +46,18 @@ export default function HomeScreen() {
             <AvatarPreview />
           )}
         </TouchableOpacity>
+        <NotificadorDeRetos/>
         <View style={styles.buttonsRow}>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/misChallenges')}>
             <Text style={styles.buttonText}>Challenges</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => router.push('/viewSteps')}>
             <Text style={styles.buttonText}>Steps</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonsRow}>
+          <TouchableOpacity style={styles.button} onPress={crearReto}>
+            <Text style={styles.buttonText}>Send challenge</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -64,7 +72,7 @@ const styles = StyleSheet.create({
   mainContent: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#E6FFE6' },
   avatarText: { color: '#000', fontWeight: 'bold', fontSize: 20 },
   buttonsRow: { flexDirection: 'row', marginTop: 20 },
-  button: { backgroundColor: '#6A0DAD', padding: 10, borderRadius: 10, marginHorizontal: 10, width: 150, height: 50, justifyContent: 'center' },
+  button: { backgroundColor: '#6A0DAD', padding: 10, borderRadius: 10, marginHorizontal: 10, width: 180, height: 50, justifyContent: 'center' },
   avatarContainer: { padding: 5, borderRadius: 10, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center' },
   buttonText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center', fontSize: 18 },
 });
