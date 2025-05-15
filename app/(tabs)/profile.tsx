@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -10,16 +10,43 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [xp, setXP] = useState<number>(0);
   const [steps, setSteps] = useState<number>(0);
+  const previousStepsRef = useRef<number>(0);
 
   useEffect(() => {
     const loadData = async () => {
       const storedXP = await AsyncStorage.getItem('xp');
       const storedSteps = await AsyncStorage.getItem('totalSteps');
-      if (storedXP) setXP(parseInt(storedXP, 10));
-      if (storedSteps) setSteps(parseInt(storedSteps, 10));
+      const parsedXP = storedXP ? parseInt(storedXP, 10) : 0;
+      const parsedSteps = storedSteps ? parseInt(storedSteps, 10) : 0;
+
+      setXP(parsedXP);
+      setSteps(parsedSteps);
+      previousStepsRef.current = parsedSteps;
     };
+
     loadData();
+
+    const interval = setInterval(() => {
+      addXP(5); // 5 XP cada minuto
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const stepsDiff = steps - previousStepsRef.current;
+    const extraXP = Math.floor(stepsDiff / 1000) * 10; // 10 XP cada 1000 pasos
+    if (extraXP > 0) {
+      addXP(extraXP);
+      previousStepsRef.current = steps - (stepsDiff % 1000);
+    }
+  }, [steps]);
+
+  const addXP = async (amount: number) => {
+    const newXP = xp + amount;
+    setXP(newXP);
+    await AsyncStorage.setItem('xp', newXP.toString());
+  };
 
   const level = Math.floor(0.1 * Math.sqrt(xp));
   const xpToNextLevel = Math.pow((level + 1) / 0.1, 2);
@@ -39,7 +66,7 @@ export default function ProfileScreen() {
       <View style={styles.mainContent}>
         <Text style={styles.title}>Mi Perfil</Text>
         <View style={styles.infoBox}>
-          <Text style={styles.infoText}>Nombre: JuanFit</Text>
+          <Text style={styles.infoText}>Nombre: usuario</Text>
           <Text style={styles.infoText}>
             Nivel: {level} (XP: {xp} / {Math.round(xpToNextLevel)})
           </Text>
