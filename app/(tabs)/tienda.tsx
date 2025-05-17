@@ -8,12 +8,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 
 const items = [
-  { id: '1', name: 'Gafas deportivas', price: 15, image: require('@/assets/images/gym-shop.png') },
-  { id: '2', name: 'Camiseta técnica', price: 10, image: require('@/assets/images/gym-shop.png') },
-  { id: '3', name: 'Zapatos especiales', price: 20, image: require('@/assets/images/gym-shop.png') },
-  { id: '4', name: 'Guantes de entrenamiento', price: 8, image: require('@/assets/images/gym-shop.png') },
-  { id: '5', name: 'Cinturón lumbar', price: 12, image: require('@/assets/images/gym-shop.png') },
-  { id: '6', name: 'Mochila fitness', price: 18, image: require('@/assets/images/gym-shop.png') },
+  { id: '1', name: 'Gafas deportivas', price: 15, image: require('@/assets/images/sport-glasses.png') },
+  { id: '2', name: 'Camiseta técnica', price: 10, image: require('@/assets/images/sport-shirt.png') },
+  { id: '3', name: 'Zapatos especiales', price: 20, image: require('@/assets/images/sport-shoes.png') },
+  { id: '4', name: 'Guantes de entrenamiento', price: 8, image: require('@/assets/images/sport-gloves.png') },
+  { id: '5', name: 'Boina', price: 12, image: require('@/assets/images/boina.png') },
+  { id: '6', name: 'Mochila fitness', price: 18, image: require('@/assets/images/sport-bag.png') },
 ];
 
 export default function StoreScreen() {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   image: {
-    maxWidth: '50%',
+    maxWidth: '25%',
     height: 100,
     borderRadius: 10,
     resizeMode: 'cover',
